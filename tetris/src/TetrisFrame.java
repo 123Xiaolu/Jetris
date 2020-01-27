@@ -1,8 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -14,8 +12,8 @@ import java.util.TimerTask;
 
 /**
  * @author lyx1920055799
- * @version 1.2
- * @date 2020/1/26 14:48
+ * @version beta 1.2.1
+ * @date 2020/1/2 18:00
  */
 
 public class TetrisFrame extends JFrame {
@@ -774,17 +772,64 @@ public class TetrisFrame extends JFrame {
     class MyDialog extends JDialog {
 
         public MyDialog() {
-            int width = 260;
-            int height = 330;
+            setTitle("Help");
+            setIconImage(help);
+            int width = 250;
+            int height = 320;
             setModalityType(ModalityType.APPLICATION_MODAL);
             Point point = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
             setBounds(point.x - width / 2, point.y - height / 2, width, height);
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            setTitle("Help");
-            setIconImage(help);
+            JTabbedPane tabbedPane = new JTabbedPane();
+            JPanel settings = new JPanel();
+            JPanel guide = new JPanel();
+            JPanel about = new JPanel();
+            settings.setLayout(new FlowLayout(FlowLayout.LEFT));
+            JCheckBox music = new JCheckBox("Music");
+            music.setSelected(myMusic.isFlag());
+            music.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    boolean b = ((JCheckBox) e.getSource()).isSelected();
+                    myMusic.mute(b);
+                }
+            });
+            settings.add(music);
+            ButtonGroup buttonGroup = new ButtonGroup();
+            JRadioButton radioButton1 = new JRadioButton("Metal");
+            JRadioButton radioButton2 = new JRadioButton("Local");
+            radioButton1.setSelected(true);
+            buttonGroup.add(radioButton1);
+            buttonGroup.add(radioButton2);
+            radioButton1.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    boolean b = ((JRadioButton) e.getSource()).isSelected();
+                    if (b){
+                        setCrossPlatformStyle();
+                        SwingUtilities.updateComponentTreeUI(TetrisFrame.this);
+                        SwingUtilities.updateComponentTreeUI(MyDialog.this);
+                    }
+                }
+            });
+            radioButton2.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    boolean b = ((JRadioButton) e.getSource()).isSelected();
+                    if (b){
+                        setLocalStyle();
+                        SwingUtilities.updateComponentTreeUI(TetrisFrame.this);
+                        SwingUtilities.updateComponentTreeUI(MyDialog.this);
+                    }
+                }
+            });
+            JPanel panel = new JPanel();
+            panel.add(radioButton1);
+            panel.add(radioButton2);
+            settings.add(panel);
             String str = "<html>\n" +
                     "<body>\n" +
-                    "\t<p>Control</p>\n" +
+                    "\t<p>Guide:</p>\n" +
                     "\t<br>\n" +
                     "\t<p>&uarr;&ensp;&ensp;Rotate Counter-clockwise</p>\n" +
                     "\t<p>&larr;&ensp;&ensp;Move Left</p>\n" +
@@ -796,19 +841,9 @@ public class TetrisFrame extends JFrame {
                     "\t<p>P&ensp;&ensp;Pause</p>\n" +
                     "\t<p>O&ensp;&ensp;Stop</p>\n" +
                     "\t<p>L&ensp;&ensp;Help</p>\n" +
-                    "\t<p>Author&ensp;&ensp;lyx1920055799</p>\n" +
-                    "\t<br>\n" +
                     "</html>";
             JLabel label = new JLabel(str, JLabel.CENTER);
-            JCheckBox music = new JCheckBox("music");
-            music.setSelected(myMusic.isFlag());
-            music.addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    boolean b = ((JCheckBox) e.getSource()).isSelected();
-                    myMusic.mute(b);
-                }
-            });
+            guide.add(label);
             JButton button = new JButton("Github");
             button.addActionListener(new ActionListener() {
                 @Override
@@ -823,15 +858,11 @@ public class TetrisFrame extends JFrame {
                     }
                 }
             });
-            JPanel panel = new JPanel();
-            panel.add(music);
-            panel.add(button);
-            JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel, label);
-            splitPane.setBorder(null);
-            JScrollPane scrollPane = new JScrollPane(splitPane);
-            scrollPane.setBorder(null);
-            Container container = getContentPane();
-            container.add(scrollPane);
+            about.add(button);
+            tabbedPane.addTab("Settings", settings);
+            tabbedPane.addTab("Guide", guide);
+            tabbedPane.addTab("About", about);
+            getContentPane().add(tabbedPane);
             setVisible(true);
         }
     }
@@ -888,9 +919,17 @@ public class TetrisFrame extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        new TetrisFrame();
+    public static void setLocalStyle() {
         String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
+        setStyle(lookAndFeel);
+    }
+
+    public static void setCrossPlatformStyle() {
+        String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
+        setStyle(lookAndFeel);
+    }
+
+    private static void setStyle(String lookAndFeel) {
         try {
             UIManager.setLookAndFeel(lookAndFeel);
         } catch (ClassNotFoundException e) {
@@ -902,5 +941,9 @@ public class TetrisFrame extends JFrame {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        new TetrisFrame();
     }
 }
