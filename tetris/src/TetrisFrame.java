@@ -8,8 +8,8 @@ import java.util.TimerTask;
 
 /**
  * @author lyx1920055799
- * @version beta 1.2.2
- * @date 2020/1/28 14:00
+ * @version beta 1.2.3
+ * @date 2020/1/28 17:00
  */
 public class TetrisFrame extends JFrame {
 

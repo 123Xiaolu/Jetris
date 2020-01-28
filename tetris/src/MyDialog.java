@@ -1,37 +1,48 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
  * @author lyx1920055799
- * @version beta 1.2.2
- * @date 2020/1/28 10:00
+ * @version beta 1.2.3
+ * @date 2020/1/28 17:00
  */
 public class MyDialog extends JDialog {
 
     private static boolean m = true;
     private static boolean s = false;
+    private TetrisFrame tetrisFrame;
 
     public MyDialog(TetrisFrame tetrisFrame) {
+        this.tetrisFrame = tetrisFrame;
         setTitle("Help");
         setIconImage(TetrisFrame.help);
-        int width = 240;
-        int height = 300;
+        int width = 260;
+        int height = 330;
         setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         Point point = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
         setBounds(point.x - width / 2, point.y - height / 2, width, height);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        tetrisFrame.playfield.pause();
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                tetrisFrame.playfield.start();
+            }
+        });
+        initView();
+        setVisible(true);
+    }
+
+    public void initView(){
         JTabbedPane tabbedPane = new JTabbedPane();
         JPanel settings = new JPanel();
         JPanel guide = new JPanel();
         JPanel about = new JPanel();
-        settings.setLayout(null);
         JCheckBox bgm = new JCheckBox("BGM");
         JCheckBox se = new JCheckBox("Sound effect");
         bgm.setSelected(tetrisFrame.playfield.tetrisMusic.isFlag_bgm());
@@ -52,6 +63,7 @@ public class MyDialog extends JDialog {
         });
         bgm.setBounds(15, 0, 60, 30);
         se.setBounds(15, 30, 120, 30);
+        settings.setLayout(null);
         settings.add(bgm);
         settings.add(se);
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -132,7 +144,6 @@ public class MyDialog extends JDialog {
         tabbedPane.addTab("Guide", guide);
         tabbedPane.addTab("About", about);
         getContentPane().add(tabbedPane);
-        setVisible(true);
     }
 
     public static void setLocalStyle() {
