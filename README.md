@@ -4,4 +4,4 @@ Java swing to implement Tetris.
 
 # Running
 
-![0](Screenshot/running.jpg)
+<img src="Screenshot/running.jpg" width="30%" height="30%" alt="running">
