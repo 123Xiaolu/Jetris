@@ -1,29 +1,23 @@
 import javax.imageio.ImageIO;
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
  * @author lyx1920055799
- * @version beta 1.2.1
- * @date 2020/1/2 18:00
+ * @version beta 1.2.2
+ * @date 2020/1/28 14:00
  */
-
 public class TetrisFrame extends JFrame {
 
     public JLabel score, lines, level;
-    private PlayField playfield;
-    private int X = 0, Y = 0;
-    public MyMusic myMusic = new MyMusic();
+    public PlayField playfield;
+    public int X = 0, Y = 0;
 
-    private static Image Matrix, I, J, L, O, S, T, Z, start, stop, pause, help;
+    public static Image Matrix, I, J, L, O, S, T, Z, start, stop, pause, help;
 
     static {
         try {
@@ -44,7 +38,7 @@ public class TetrisFrame extends JFrame {
         }
     }
 
-    private void initView() {
+    public void initView() {
         JLabel label1 = new JLabel("NEXT", JLabel.CENTER);
         JLabel label2 = new JLabel("SCORE", JLabel.CENTER);
         JLabel label3 = new JLabel("LINES", JLabel.CENTER);
@@ -139,28 +133,54 @@ public class TetrisFrame extends JFrame {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    playfield.rotateLeft();
-                } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    playfield.softDrop();
-                } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    playfield.moveLeft();
-                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    playfield.moveRight();
-                } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    playfield.hardDrop();
-                } else if (e.getKeyCode() == KeyEvent.VK_CONTROL) {
-                    playfield.rotateRight();
-                } else if (e.getKeyCode() == KeyEvent.VK_O) {
-                    playfield.stop();
-                } else if (e.getKeyCode() == KeyEvent.VK_P) {
-                    playfield.pause();
-                } else if (e.getKeyCode() == KeyEvent.VK_K) {
-                    playfield.start();
-                } else if (e.getKeyCode() == KeyEvent.VK_L) {
-                    help();
-                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    System.exit(0);
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_UP:
+                        if (!playfield.isPausing) {
+                            playfield.rotateLeft();
+                        }
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        if (!playfield.isPausing) {
+                            playfield.softDrop();
+                        }
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        if (!playfield.isPausing) {
+                            playfield.moveLeft();
+                        }
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        if (!playfield.isPausing) {
+                            playfield.moveRight();
+                        }
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        if (!playfield.isPausing) {
+                            playfield.hardDrop();
+                        }
+                        break;
+                    case KeyEvent.VK_CONTROL:
+                        if (!playfield.isPausing) {
+                            playfield.rotateRight();
+                        }
+                        break;
+                    case KeyEvent.VK_O:
+                        playfield.stop();
+                        break;
+                    case KeyEvent.VK_P:
+                        playfield.pause();
+                        break;
+                    case KeyEvent.VK_K:
+                        playfield.start();
+                        break;
+                    case KeyEvent.VK_L:
+                        help();
+                        break;
+                    case KeyEvent.VK_ESCAPE:
+                        System.exit(0);
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -203,7 +223,7 @@ public class TetrisFrame extends JFrame {
     }
 
     public void help() {
-        new MyDialog();
+        new MyDialog(this);
     }
 
 
@@ -220,6 +240,7 @@ public class TetrisFrame extends JFrame {
         private int score = 0;
         private int level = 1;
         private int lines = 0;
+        protected TetrisMusic tetrisMusic = new TetrisMusic();
 
         public PlayField() {
             setBounds(0, 0, Matrix.getWidth(this), Matrix.getHeight(this));
@@ -238,17 +259,25 @@ public class TetrisFrame extends JFrame {
             paintWall(g);
         }
 
+        public boolean isPausing() {
+            return isPausing;
+        }
+
+        public boolean isRunning() {
+            return isRunning;
+        }
+
         public void start() {
-            init();
-            myMusic.play();
-            isRunning = true;
+            tetrisMusic.play();
             if (isPausing) {
                 isPausing = false;
             } else {
+                init();
+                isRunning = true;
                 generate();
             }
-            boolean isUp = levelUp();
-            if (!isUp) {
+            speed = dropSpeed(level);
+            if (timer == null || timerTask == null) {
                 timer = new Timer();
                 timerTask = new TimerTask() {
                     @Override
@@ -264,18 +293,20 @@ public class TetrisFrame extends JFrame {
 
         public void pause() {
             isPausing = true;
-            myMusic.pause();
+            tetrisMusic.pause();
         }
 
         public void stop() {
             init();
-            myMusic.stop();
+            tetrisMusic.stop();
         }
 
         public void init() {
-            if (timer != null) {
+            if (timer != null && timerTask != null) {
                 timerTask.cancel();
                 timer.cancel();
+                timerTask = null;
+                timer = null;
             }
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 22; j++) {
@@ -300,10 +331,10 @@ public class TetrisFrame extends JFrame {
             if (level <= 15) {
                 int i = lines / 10 + 1;
                 speed = dropSpeed(level);
-                if (i != level) {
+                if (i > level) {
                     level = i;
                     speed = dropSpeed(level);
-                    if (timer != null) {
+                    if (timer != null && timerTask != null) {
                         timerTask.cancel();
                         timer.cancel();
                     }
@@ -333,24 +364,23 @@ public class TetrisFrame extends JFrame {
                 if (isWall()) {
                     tetrominos.y -= 1;
                     lockDown();
+                } else {
+                    repaint();
                 }
-                repaint();
             }
         }
 
         public void softDrop() {
             if (tetrominos != null) {
                 tetrominos.y += 1;
-                score++;
                 if (isWall()) {
                     tetrominos.y -= 1;
                     lockDown();
-                    if (score >= 1) {
-                        score--;
-                    }
+                } else {
+                    score++;
+                    score();
+                    repaint();
                 }
-                score();
-                repaint();
             }
         }
 
@@ -384,8 +414,10 @@ public class TetrisFrame extends JFrame {
                     if (tetrominos.state == -1) {
                         tetrominos.state = 3;
                     }
+                } else {
+                    repaint();
+                    tetrisMusic.roteMusic();
                 }
-                repaint();
             }
         }
 
@@ -400,8 +432,10 @@ public class TetrisFrame extends JFrame {
                     if (tetrominos.state == 4) {
                         tetrominos.state = 0;
                     }
+                } else {
+                    repaint();
+                    tetrisMusic.roteMusic();
                 }
-                repaint();
             }
         }
 
@@ -410,8 +444,10 @@ public class TetrisFrame extends JFrame {
                 tetrominos.x -= 1;
                 if (isWall()) {
                     tetrominos.x += 1;
+                } else {
+                    repaint();
+                    tetrisMusic.moveMusic();
                 }
-                repaint();
             }
         }
 
@@ -420,8 +456,10 @@ public class TetrisFrame extends JFrame {
                 tetrominos.x += 1;
                 if (isWall()) {
                     tetrominos.x -= 1;
+                } else {
+                    repaint();
+                    tetrisMusic.moveMusic();
                 }
-                repaint();
             }
         }
 
@@ -442,6 +480,7 @@ public class TetrisFrame extends JFrame {
                 int y = (tetrominos.o[tetrominos.state][i][1] + tetrominos.y);
                 wall[x][y] = tetrominos.type;
             }
+            tetrisMusic.lockDownMusic();
             int c = lineClear();
             if (c == 1) {
                 score += 100 * c;
@@ -464,6 +503,7 @@ public class TetrisFrame extends JFrame {
         public void lockOut() {
             for (int i = 0; i < 10; i++) {
                 if (wall[i][1] != 0) {
+                    tetrisMusic.lockOutMusic();
                     pause();
                     JOptionPane.showMessageDialog(null, "SCORE: " + score, "Game over", JOptionPane.INFORMATION_MESSAGE);
                     stop();
@@ -493,6 +533,7 @@ public class TetrisFrame extends JFrame {
                         count++;
                         if (count == 10) {
                             lines++;
+                            tetrisMusic.lineClearMusic();
                             for (int k = 0; k < 10; k++) {
                                 wall[k][i] = 0;
                             }
@@ -766,180 +807,6 @@ public class TetrisFrame extends JFrame {
                         }
                 };
             }
-        }
-    }
-
-    class MyDialog extends JDialog {
-
-        public MyDialog() {
-            setTitle("Help");
-            setIconImage(help);
-            int width = 250;
-            int height = 320;
-            setModalityType(ModalityType.APPLICATION_MODAL);
-            Point point = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-            setBounds(point.x - width / 2, point.y - height / 2, width, height);
-            setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            JTabbedPane tabbedPane = new JTabbedPane();
-            JPanel settings = new JPanel();
-            JPanel guide = new JPanel();
-            JPanel about = new JPanel();
-            settings.setLayout(new FlowLayout(FlowLayout.LEFT));
-            JCheckBox music = new JCheckBox("Music");
-            music.setSelected(myMusic.isFlag());
-            music.addItemListener(new ItemListener() {
-                @Override
-                public void itemStateChanged(ItemEvent e) {
-                    boolean b = ((JCheckBox) e.getSource()).isSelected();
-                    myMusic.mute(b);
-                }
-            });
-            settings.add(music);
-            ButtonGroup buttonGroup = new ButtonGroup();
-            JRadioButton radioButton1 = new JRadioButton("Metal");
-            JRadioButton radioButton2 = new JRadioButton("Local");
-            radioButton1.setSelected(true);
-            buttonGroup.add(radioButton1);
-            buttonGroup.add(radioButton2);
-            radioButton1.addItemListener(new ItemListener() {
-                @Override
-                public void itemStateChanged(ItemEvent e) {
-                    boolean b = ((JRadioButton) e.getSource()).isSelected();
-                    if (b){
-                        setCrossPlatformStyle();
-                        SwingUtilities.updateComponentTreeUI(TetrisFrame.this);
-                        SwingUtilities.updateComponentTreeUI(MyDialog.this);
-                    }
-                }
-            });
-            radioButton2.addItemListener(new ItemListener() {
-                @Override
-                public void itemStateChanged(ItemEvent e) {
-                    boolean b = ((JRadioButton) e.getSource()).isSelected();
-                    if (b){
-                        setLocalStyle();
-                        SwingUtilities.updateComponentTreeUI(TetrisFrame.this);
-                        SwingUtilities.updateComponentTreeUI(MyDialog.this);
-                    }
-                }
-            });
-            JPanel panel = new JPanel();
-            panel.add(radioButton1);
-            panel.add(radioButton2);
-            settings.add(panel);
-            String str = "<html>\n" +
-                    "<body>\n" +
-                    "\t<p>Guide:</p>\n" +
-                    "\t<br>\n" +
-                    "\t<p>&uarr;&ensp;&ensp;Rotate Counter-clockwise</p>\n" +
-                    "\t<p>&larr;&ensp;&ensp;Move Left</p>\n" +
-                    "\t<p>&rarr;&ensp;&ensp;Move Right</p>\n" +
-                    "\t<p>&darr;&ensp;&ensp;Soft drop</p>\n" +
-                    "\t<p>Ctrl&ensp;&ensp;Rotate Clockwise</p>\n" +
-                    "\t<p>Space&ensp;&ensp;Hard drop</p>\n" +
-                    "\t<p>K&ensp;&ensp;Start</p>\n" +
-                    "\t<p>P&ensp;&ensp;Pause</p>\n" +
-                    "\t<p>O&ensp;&ensp;Stop</p>\n" +
-                    "\t<p>L&ensp;&ensp;Help</p>\n" +
-                    "</html>";
-            JLabel label = new JLabel(str, JLabel.CENTER);
-            guide.add(label);
-            JButton button = new JButton("Github");
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Desktop desktop = Desktop.getDesktop();
-                    try {
-                        desktop.browse(new URI("https://github.com/lyx1920055799/tetris"));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    } catch (URISyntaxException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-            about.add(button);
-            tabbedPane.addTab("Settings", settings);
-            tabbedPane.addTab("Guide", guide);
-            tabbedPane.addTab("About", about);
-            getContentPane().add(tabbedPane);
-            setVisible(true);
-        }
-    }
-
-    class MyMusic {
-
-        private Clip clip;
-        private boolean flag = true;
-
-        public MyMusic() {
-            try {
-                URL url = this.getClass().getResource("bgm.wav");
-                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
-                clip = AudioSystem.getClip();
-                clip.open(audioInputStream);
-            } catch (
-                    UnsupportedAudioFileException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (LineUnavailableException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void play() {
-            if (flag) {
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
-            }
-        }
-
-        public void pause() {
-            clip.stop();
-            clip.setFramePosition(clip.getFramePosition());
-        }
-
-        public void stop() {
-            clip.stop();
-            clip.setFramePosition(0);
-        }
-
-        public boolean isFlag() {
-            return flag;
-        }
-
-        public void mute(boolean b) {
-            flag = b;
-            if (!flag) {
-                clip.stop();
-                clip.setFramePosition(0);
-            } else if (playfield.isRunning && !playfield.isPausing) {
-                play();
-            }
-        }
-    }
-
-    public static void setLocalStyle() {
-        String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
-        setStyle(lookAndFeel);
-    }
-
-    public static void setCrossPlatformStyle() {
-        String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
-        setStyle(lookAndFeel);
-    }
-
-    private static void setStyle(String lookAndFeel) {
-        try {
-            UIManager.setLookAndFeel(lookAndFeel);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
         }
     }
 

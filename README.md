@@ -1,3 +1,7 @@
 # tetris
 
-Java to implement Tetris.
+Java swing to implement Tetris.
+
+# Running
+
+![0](Screenshot/running.png)
