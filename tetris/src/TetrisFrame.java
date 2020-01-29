@@ -8,8 +8,8 @@ import java.util.TimerTask;
 
 /**
  * @author lyx1920055799
- * @version beta 1.2.3
- * @date 2020/1/28 17:00
+ * @version beta 1.2.4
+ * @date 2020/1/29 19:30
  */
 public class TetrisFrame extends JFrame {
 
@@ -86,20 +86,17 @@ public class TetrisFrame extends JFrame {
         add(button2);
         add(button3);
         add(button4);
-        ActionListener actionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource().equals(button1)) {
-                    playfield.start();
-                } else if (e.getSource().equals(button2)) {
-                    playfield.pause();
-                } else if (e.getSource().equals(button3)) {
-                    playfield.stop();
-                } else if (e.getSource().equals(button4)) {
-                    help();
-                }
-                requestFocus();
+        ActionListener actionListener = e -> {
+            if (e.getSource().equals(button1)) {
+                playfield.start();
+            } else if (e.getSource().equals(button2)) {
+                playfield.pause();
+            } else if (e.getSource().equals(button3)) {
+                playfield.stop();
+            } else if (e.getSource().equals(button4)) {
+                help();
             }
+            requestFocus();
         };
         button1.addActionListener(actionListener);
         button2.addActionListener(actionListener);
@@ -292,8 +289,10 @@ public class TetrisFrame extends JFrame {
         }
 
         public void pause() {
-            isPausing = true;
-            tetrisMusic.pause();
+            if (isRunning) {
+                isPausing = true;
+                tetrisMusic.pause();
+            }
         }
 
         public void stop() {
@@ -516,11 +515,10 @@ public class TetrisFrame extends JFrame {
             char[] chars = {'O', 'I', 'T', 'L', 'J', 'S', 'Z'};
             if (next != null) {
                 tetrominos = next;
-                next = new Tetrominos(chars[random]);
             } else {
                 tetrominos = new Tetrominos(chars[random]);
-                next = new Tetrominos(chars[random]);
             }
+            next = new Tetrominos(chars[random]);
             TetrisFrame.this.repaint();
         }
 
