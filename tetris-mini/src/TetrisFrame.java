@@ -20,7 +20,7 @@ import java.util.TimerTask;
  *      ESC   Exit
  *
  * @author lyx1920055799
- * @version beta 1.0.0
+ * @version beta 2.0.0
  */
 public class TetrisFrame extends JFrame {
 

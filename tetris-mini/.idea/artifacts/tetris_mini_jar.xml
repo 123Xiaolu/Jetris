@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="tetris-mini:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/tetris_mini_jar</output-path>
+    <root id="archive" name="tetris-mini.jar">
+      <element id="module-output" name="tetris-mini" />
+    </root>
+  </artifact>
+</component>
