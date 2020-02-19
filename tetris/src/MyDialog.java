@@ -11,7 +11,6 @@ import java.net.URISyntaxException;
 /**
  * @author lyx1920055799
  * @version 1.0.0
- * @date 2020/2/19 17:50
  */
 public class MyDialog extends JDialog implements ActionListener, ItemListener {
 
@@ -38,6 +37,9 @@ public class MyDialog extends JDialog implements ActionListener, ItemListener {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
+                if (tetrisFrame.playfield.isRunning()) {
+                    tetrisFrame.playfield.start();
+                }
             }
         });
         initView();
