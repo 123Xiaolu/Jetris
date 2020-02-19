@@ -27,7 +27,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../tetris-mini" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/ui" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -35,9 +35,15 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\starrysky\IdeaProjects\tetris\src\ui" />
       <recent name="C:\Users\starrysky\IdeaProjects\tetris\src" />
+      <recent name="C:\Users\starrysky\IdeaProjects\tetris\src\Ui" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="Ui" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\starrysky\IdeaProjects\tetris\src\Ui" />
       <recent name="C:\Users\starrysky\IdeaProjects\tetris\src" />
     </key>
   </component>
@@ -89,38 +95,38 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="485" y="221" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1580103581773" />
-    <state x="574" y="121" key="#com.intellij.ide.util.MemberChooser" timestamp="1580201571235">
+    <state x="574" y="121" key="#com.intellij.ide.util.MemberChooser" timestamp="1582016999897">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="574" y="121" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1580201571235" />
+    <state x="574" y="121" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1582016999897" />
     <state x="520" y="202" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1580700004943">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="520" y="202" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1536.824@0.0.1536.824" timestamp="1580700004943" />
-    <state x="499" y="162" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1580138306817">
+    <state x="499" y="162" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1582025797482">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="499" y="162" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1580138306817" />
+    <state x="499" y="162" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1582025797482" />
     <state x="549" y="171" key="FileChooserDialogImpl" timestamp="1580700077691">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="171" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1580700077691" />
-    <state width="1493" height="208" key="GridCell.Tab.0.bottom" timestamp="1580700172056">
+    <state width="1493" height="208" key="GridCell.Tab.0.bottom" timestamp="1582105489189">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="208" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1580700172056" />
-    <state width="1493" height="208" key="GridCell.Tab.0.center" timestamp="1580700172056">
+    <state width="1493" height="208" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1582105489189" />
+    <state width="1493" height="208" key="GridCell.Tab.0.center" timestamp="1582105489189">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="208" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1580700172056" />
-    <state width="1493" height="208" key="GridCell.Tab.0.left" timestamp="1580700172056">
+    <state width="1493" height="208" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1582105489189" />
+    <state width="1493" height="208" key="GridCell.Tab.0.left" timestamp="1582105489189">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="208" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1580700172056" />
-    <state width="1493" height="208" key="GridCell.Tab.0.right" timestamp="1580700172056">
+    <state width="1493" height="208" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1582105489189" />
+    <state width="1493" height="208" key="GridCell.Tab.0.right" timestamp="1582105489189">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="208" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1580700172056" />
+    <state width="1493" height="208" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1582105489189" />
     <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1580197322503">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -141,10 +147,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="270" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1580700013873" />
-    <state x="461" y="241" key="com.intellij.ide.util.TipDialog" timestamp="1580296603667">
+    <state x="461" y="241" key="com.intellij.ide.util.TipDialog" timestamp="1582096735131">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="461" y="241" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1580296603667" />
+    <state x="461" y="241" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1582096735131" />
     <state x="178" y="29" key="new project wizard" timestamp="1580296796752">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

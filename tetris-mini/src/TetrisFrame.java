@@ -3,30 +3,32 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
  * Guide:
- *      ↑     Rotate Counter-clockwise
- *      ↓     Soft drop
- *      ←     Move Left
- *      →     Move right
- *      Space Hard drop
- *      Ctrl  Rotate Clockwise
- *      K     Start game
- *      P     Pause game
- *      O     Stop game
- *      ESC   Exit
+ * ↑     Rotate Counter-clockwise
+ * ↓     Soft drop
+ * ←     Move Left
+ * →     Move right
+ * Space Hard drop
+ * Ctrl  Rotate Clockwise
+ * K     Start game
+ * P     Pause game
+ * O     Stop game
+ * ESC   Exit
  *
  * @author lyx1920055799
- * @version beta 2.0.0
+ * @version 1.0.0
  */
 public class TetrisFrame extends JFrame {
 
     protected JLabel score, lines, level;
     protected PlayField playfield;
-    protected int X = 0, Y = 0;
+    protected int lastX = 0, lastY = 0;
 
     protected static Image Matrix, I, J, L, O, S, T, Z, start, stop, pause;
 
@@ -87,9 +89,9 @@ public class TetrisFrame extends JFrame {
         button1.setIcon(new ImageIcon(start.getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
         button2.setIcon(new ImageIcon(pause));
         button3.setIcon(new ImageIcon(stop));
-        button1.setBounds(295,450,24,24);
-        button2.setBounds(329,450,24,24);
-        button3.setBounds(363,450,24,24);
+        button1.setBounds(295, 450, 24, 24);
+        button2.setBounds(329, 450, 24, 24);
+        button3.setBounds(363, 450, 24, 24);
         add(button1);
         add(button2);
         add(button3);
@@ -113,8 +115,8 @@ public class TetrisFrame extends JFrame {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                X = e.getX();
-                Y = e.getY();
+                lastX = e.getX();
+                lastY = e.getY();
             }
         });
         addMouseMotionListener(new MouseMotionAdapter() {
@@ -122,8 +124,8 @@ public class TetrisFrame extends JFrame {
             public void mouseDragged(MouseEvent e) {
                 int xOnScreen = e.getXOnScreen();
                 int yOnScreen = e.getYOnScreen();
-                int x = xOnScreen - X;
-                int y = yOnScreen - Y;
+                int x = xOnScreen - lastX;
+                int y = yOnScreen - lastY;
                 TetrisFrame.this.setLocation(x, y);
             }
         });
@@ -502,6 +504,12 @@ public class TetrisFrame extends JFrame {
 
         public int lineClear() {
             int lines = 0;
+            int layer = 21;
+            int[][] arr = new int[10][22];
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                System.arraycopy(wall[i], 0, arr[i], 0, 22);
+            }
             for (int i = 21; i >= 0; i--) {
                 int count = 0;
                 for (int j = 9; j >= 0; j--) {
@@ -518,10 +526,48 @@ public class TetrisFrame extends JFrame {
                                     wall[n][m] = o;
                                 }
                             }
+                            if (list.size() == 0) {
+                                layer = i;
+                                list.add(layer);
+                            } else {
+                                layer--;
+                                list.add(layer);
+                            }
                             i++;
                         }
                     }
                 }
+            }
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 22; j++) {
+                    int x = wall[i][j];
+                    wall[i][j] = arr[i][j];
+                    arr[i][j] = x;
+                }
+            }
+            for (int i = 0; i < list.size(); i++) {
+                int finalI = i;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int a = 4, b = 5; a >= 0; a--, b++) {
+                            wall[a][list.get(finalI)] = 0;
+                            wall[b][list.get(finalI)] = 0;
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            repaint();
+                        }
+                        if (finalI == list.size() - 1) {
+                            for (int i = 0; i < 10; i++) {
+                                System.arraycopy(arr[i], 0, wall[i], 0, 22);
+                            }
+                            repaint();
+                        }
+                    }
+                }).start();
             }
             return lines;
         }
