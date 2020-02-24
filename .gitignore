@@ -1,3 +1,5 @@
-*/.idea
-*/out
+/tetris/.idea
+/tetris/out
+/tetris-mini/.idea
+/tetris-mini/out
 *.iml
