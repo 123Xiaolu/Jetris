@@ -1,4 +1,4 @@
-# tetris
+# Jetris
 
 Java swing to implement Tetris.
 
