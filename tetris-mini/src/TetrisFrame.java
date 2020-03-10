@@ -22,7 +22,7 @@ import java.util.TimerTask;
  * ESC   Exit
  *
  * @author lyx1920055799
- * @version 1.0.0
+ * @version 1.0.2
  */
 public class TetrisFrame extends JFrame {
 
@@ -491,14 +491,13 @@ public class TetrisFrame extends JFrame {
         }
 
         public void generate() {
-            int random = (int) (Math.random() * 7);
             char[] chars = {'O', 'I', 'T', 'L', 'J', 'S', 'Z'};
             if (next != null) {
                 tetrominos = next;
             } else {
-                tetrominos = new Tetrominos(chars[random]);
+                tetrominos = new Tetrominos(chars[(int) (Math.random() * 7)]);
             }
-            next = new Tetrominos(chars[random]);
+            next = new Tetrominos(chars[(int) (Math.random() * 7)]);
             TetrisFrame.this.repaint();
         }
 

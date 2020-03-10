@@ -10,8 +10,8 @@ import java.util.TimerTask;
 
 /**
  * @author lyx1920055799
- * @version 1.0.0
- * @date 2020/2/19 18:00
+ * @version 1.0.2
+ * @date 2020/3/10 17:00
  */
 public class TetrisFrame extends JFrame {
 
@@ -513,14 +513,13 @@ public class TetrisFrame extends JFrame {
         }
 
         public void generate() {
-            int random = (int) (Math.random() * 7);
             char[] chars = {'O', 'I', 'T', 'L', 'J', 'S', 'Z'};
             if (next != null) {
                 tetrominos = next;
             } else {
-                tetrominos = new Tetrominos(chars[random]);
+                tetrominos = new Tetrominos(chars[(int) (Math.random() * 7)]);
             }
-            next = new Tetrominos(chars[random]);
+            next = new Tetrominos(chars[(int) (Math.random() * 7)]);
             TetrisFrame.this.repaint();
         }
 
@@ -539,6 +538,7 @@ public class TetrisFrame extends JFrame {
                         count++;
                         if (count == 10) {
                             lines++;
+                            tetrisMusic.lineClearMusic();
                             for (int k = 0; k < 10; k++) {
                                 wall[k][i] = 0;
                             }
