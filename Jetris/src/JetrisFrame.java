@@ -3,10 +3,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Guide:
@@ -30,7 +29,7 @@ public class JetrisFrame extends JFrame {
     protected PlayField playfield;
     protected int lastX = 0, lastY = 0;
 
-    protected static Image Matrix, I, J, L, O, S, T, Z, start, stop, pause;
+    protected static Image Matrix, I, J, L, O, S, T, Z, start, stop, pause, close;
 
     static {
         try {
@@ -45,6 +44,7 @@ public class JetrisFrame extends JFrame {
             start = ImageIO.read(JetrisFrame.class.getResource("start.png"));
             pause = ImageIO.read(JetrisFrame.class.getResource("pause.png"));
             stop = ImageIO.read(JetrisFrame.class.getResource("stop.png"));
+            close = ImageIO.read(JetrisFrame.class.getResource("close.png"));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -89,12 +89,15 @@ public class JetrisFrame extends JFrame {
         button1.setIcon(new ImageIcon(start.getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
         button2.setIcon(new ImageIcon(pause));
         button3.setIcon(new ImageIcon(stop));
+        button4.setIcon(new ImageIcon(close));
         button1.setBounds(295, 450, 24, 24);
         button2.setBounds(329, 450, 24, 24);
         button3.setBounds(363, 450, 24, 24);
+        button4.setBounds(392, 0, 24, 24);
         add(button1);
         add(button2);
         add(button3);
+        add(button4);
         ActionListener actionListener = e -> {
             if (e.getSource().equals(button1)) {
                 playfield.start();
@@ -102,6 +105,8 @@ public class JetrisFrame extends JFrame {
                 playfield.pause();
             } else if (e.getSource().equals(button3)) {
                 playfield.stop();
+            } else if (e.getSource().equals(button4)) {
+                System.exit(0);
             }
             requestFocus();
         };
@@ -495,9 +500,9 @@ public class JetrisFrame extends JFrame {
             if (next != null) {
                 tetrominos = next;
             } else {
-                tetrominos = new Tetrominos(chars[1]);
+                tetrominos = new Tetrominos(chars[new Random().nextInt(7)]);
             }
-            next = new Tetrominos(chars[1]);
+            next = new Tetrominos(chars[new Random().nextInt(7)]);
             JetrisFrame.this.repaint();
         }
 
